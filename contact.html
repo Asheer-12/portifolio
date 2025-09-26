@@ -168,61 +168,56 @@
   <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js"></script>
-  <script>
-    window.onload = function() {
-        // Debug check to see if form exists
-        const form = document.getElementById('contactForm');
-        if (!form) {
-            console.error('Form not found!');
-            return;
-        }
-    
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get message elements
-            const loadingDiv = form.querySelector('.loading');
-            const errorDiv = form.querySelector('.error-message');
-            const sentDiv = form.querySelector('.sent-message');
-            
-            if (!loadingDiv || !errorDiv || !sentDiv) {
-                console.error('Message elements not found!');
-                return;
-            }
-    
-            // Show loading
-            loadingDiv.style.display = 'block';
-            errorDiv.style.display = 'none';
-            sentDiv.style.display = 'none';
-    
-            // Send form data
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                loadingDiv.style.display = 'none';
-                
-                if (data.ok) {
-                    sentDiv.style.display = 'block';
-                    form.reset();
-                } else {
-                    throw new Error('Submission failed');
-                }
-            })
-            .catch(error => {
-                loadingDiv.style.display = 'none';
-                errorDiv.textContent = 'Error sending message. Please try again.';
-                errorDiv.style.display = 'block';
-                console.error('Error:', error);
-            });
-        });
-    };
-    </script>
+  
+<script>
+window.onload = function () {
+   const form = document.getElementById('contactForm');
+   if (!form) {
+       console.error('Form not found!');
+       return;
+   }
+   form.addEventListener('submit', function (e) {
+       e.preventDefault();
+       const loadingDiv = form.querySelector('.loading');
+       const errorDiv = form.querySelector('.error-message');
+       const sentDiv = form.querySelector('.sent-message');
+       if (!loadingDiv || !errorDiv || !sentDiv) {
+           console.error('Message elements not found!');
+           return;
+       }
+       // Show loading
+       loadingDiv.style.display = 'block';
+       errorDiv.style.display = 'none';
+       sentDiv.style.display = 'none';
+       // Send form data
+       fetch(form.action, {
+           method: 'POST',
+           body: new FormData(form)
+           // no headers needed for FormData
+       })
+       .then(response => {
+           loadingDiv.style.display = 'none';
+           if (!response.ok) {
+               throw new Error('Network response was not ok');
+           }
+           // if you know the backend returns JSON:
+           // return response.json();
+           return response.text(); // safer if unsure
+       })
+       .then(data => {
+           // If successful
+           sentDiv.style.display = 'block';
+           form.reset();
+           console.log('Server response:', data); // see what server sent back
+       })
+       .catch(error => {
+           loadingDiv.style.display = 'none';
+           errorDiv.textContent = 'Error sending message. Please try again.';
+           errorDiv.style.display = 'block';
+           console.error('Error:', error);
+       });
+   });
+};
+</script>
   </body>
 </html>

@@ -27,7 +27,9 @@
 
 /* Color Presets - These classes override global colors when applied to any section or element, providing reuse of the sam color scheme. */
 .I-image{
-  height: 20px;
+  /*height: 20px;*/
+  margin-top: 20px;
+  display: block
 }
 .light-background {
   --background-color: #1a1a1a;
